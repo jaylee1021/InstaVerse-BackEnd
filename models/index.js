@@ -8,7 +8,7 @@ const Follow = require('./follow');
 // connect to the database
 mongoose.connect('mongodb://localhost/instaverse', {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
 });
 
 // create connection object
@@ -16,7 +16,7 @@ const db = mongoose.connection;
 
 // once the database opens
 db.once('open', () => {
-    console.log('Connected to MongoDB Database: InstaVerse at HOST:', db.host, 'PORT:', db.port);
+    console.log('Connected to MongoDB Database: Mongoose App at HOST: ', db.host, 'PORT: ', db.port);
 });
 
 // if there is a database error

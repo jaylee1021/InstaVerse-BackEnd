@@ -2,10 +2,9 @@ require('dotenv').config();
 const express = require('express');
 const methodOverride = require('method-override');
 const cors = require('cors');
+const mongoose = require('mongoose');
 
 const app = express();
-
-app.use(methodOverride('_method'));
 
 // middleware
 app.use(express.urlencoded({ extended: false }));
@@ -17,8 +16,9 @@ app.get('/', (req, res) => {
 });
 
 app.use('/users', require('./controllers/users'));
+app.use('/posts', require('./controllers/posts'));
 
-
+app.use(methodOverride('_method'));
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {

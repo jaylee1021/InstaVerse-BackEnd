@@ -1,8 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const { Following } = require('../models');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const passport = require('passport');
+const { JWT_SECRET } = process.env;
+const app = express();
 
-
+// Apply authentication middleware to all other routes below this line
+app.use(passport.authenticate('jwt', { session: false }));
 // GET /followings
 router.get('/', (req, res) => {
     Following.find({ username: req.body.username })
@@ -42,3 +48,5 @@ router.delete('/:id', (req, res) => {
             res.json({ message: 'There was an issue, please try again' });
         });
 });
+
+module.exports = router;

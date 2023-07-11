@@ -1,6 +1,14 @@
 const express = require('express');
 const { Post } = require('../models');
 const router = express.Router();
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const passport = require('passport');
+const { JWT_SECRET } = process.env;
+const app = express();
+
+// Apply authentication middleware to all other routes below this line
+app.use(passport.authenticate('jwt', { session: false }));
 
 // GET /posts
 router.get('/', (req, res) => {

@@ -3,6 +3,7 @@ const express = require('express');
 const methodOverride = require('method-override');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const passport = require('passport');
 
 const app = express();
 
@@ -10,6 +11,7 @@ const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
+app.use(passport.initialize());
 
 app.get('/', (req, res) => {
     return res.json({ message: 'Welcome to InstaVerse Backend' });

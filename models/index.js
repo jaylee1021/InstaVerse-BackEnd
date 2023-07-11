@@ -10,7 +10,7 @@ const Follower = require('./follower');
 // connect to the database
 mongoose.connect('mongodb://localhost/instaverse', {
     useNewUrlParser: true,
-    useUnifiedTopology: true,
+    useUnifiedTopology: true
 });
 
 // create connection object

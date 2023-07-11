@@ -9,8 +9,8 @@ const userSchema = new mongoose.Schema({
     pronouns: String,
     profilePicture: String,
     posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
-    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Follow' }],
-    following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Follow' }],
+    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Follower' }],
+    following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Following' }],
     bio: String,
     gender: String
 }, { timestamps: true });

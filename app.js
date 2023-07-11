@@ -17,6 +17,9 @@ app.get('/', (req, res) => {
 
 app.use('/users', require('./controllers/users'));
 app.use('/posts', require('./controllers/posts'));
+app.use('/followers', require('./controllers/followers'));
+app.use('/followings', require('./controllers/followings'));
+
 
 app.use(methodOverride('_method'));
 

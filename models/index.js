@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 
 const User = require('./user');
 const Post = require('./post');
-const Follow = require('./follow');
+const Following = require('./following');
+const Follower = require('./follower');
+
 
 // connect to the database
 mongoose.connect('mongodb://localhost/instaverse', {
@@ -27,5 +29,6 @@ db.on('error', (err) => {
 module.exports = {
     User,
     Post,
-    Follow
+    Following,
+    Follower
 };

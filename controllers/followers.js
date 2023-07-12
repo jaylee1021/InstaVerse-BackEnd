@@ -1,16 +1,15 @@
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const { Follower } = require('../models');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const { JWT_SECRET } = process.env;
-const app = express();
 
-// Apply authentication middleware to all other routes below this line
-app.use(passport.authenticate('jwt', { session: false }));
+const { follower } = require('../models/follower');
+
 // GET /followers
-router.get('/', (req, res) => {
+router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
     Follower.find({ username: req.body.username })
         .then((followers) => {
             if (followers) {
@@ -26,7 +25,7 @@ router.get('/', (req, res) => {
 });
 
 // POST /followers (create a new follower)
-router.post('/', (req, res) => {
+router.post('/', passport.authenticate('jwt', { session: false }), (req, res) => {
     Follower.create(req.body)
         .then((follower) => {
             return res.json({ follower: follower });
@@ -38,7 +37,7 @@ router.post('/', (req, res) => {
 });
 
 // DELETE /followers/:id (delete a follower)
-router.delete('/:id', (req, res) => {
+router.delete('/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
     Follower.findByIdAndDelete(req.params.id)
         .then((follower) => {
             return res.json({ message: 'Follower Deleted' });

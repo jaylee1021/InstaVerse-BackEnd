@@ -1,17 +1,17 @@
+require('dotenv').config();
 const express = require('express');
-const { Post } = require('../models');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const { JWT_SECRET } = process.env;
-const app = express();
 
-// Apply authentication middleware to all other routes below this line
-app.use(passport.authenticate('jwt', { session: false }));
+const { Post } = require('../models/post');
+
+
 
 // GET /posts
-router.get('/', (req, res) => {
+router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
     Post.find({})
         .then((posts) => {
             if (posts) {
@@ -27,7 +27,7 @@ router.get('/', (req, res) => {
 });
 
 // Get /posts/:id (used for editing comments)
-router.get('/:id', (req, res) => {
+router.get('/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
     Post.findById(req.params.id)
         .then(post => {
             if (post) {
@@ -43,7 +43,7 @@ router.get('/:id', (req, res) => {
 });
 
 // GET /comments by comment Id
-router.get('/:id/comments/:commentId', (req, res) => {
+router.get('/:id/comments/:commentId', passport.authenticate('jwt', { session: false }), (req, res) => {
     Post.findById(req.params.id)
         .then(post => {
             if (!post) {
@@ -66,7 +66,7 @@ router.get('/:id/comments/:commentId', (req, res) => {
 });
 
 // POST /posts (create a new post)
-router.post('/new', (req, res) => {
+router.post('/new', passport.authenticate('jwt', { session: false }), (req, res) => {
     const newPost = {
         username: req.body.username,
         caption: req.body.caption,
@@ -84,7 +84,7 @@ router.post('/new', (req, res) => {
 });
 
 // POST /posts/:id/comments/new (create a new comment)
-router.post('/:id/comments/new', (req, res) => {
+router.post('/:id/comments/new', passport.authenticate('jwt', { session: false }), (req, res) => {
     const newComment = {
         username: req.body.username,
         comment: req.body.comment,
@@ -114,7 +114,7 @@ router.post('/:id/comments/new', (req, res) => {
 });
 
 // PUT /posts/:id (update a post)
-router.put('/:id', (req, res) => {
+router.put('/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
     Post.findById(req.params.id)
         .then(post => {
             if (!post) {
@@ -139,7 +139,7 @@ router.put('/:id', (req, res) => {
 });
 
 // Delete /posts/:id (delete a post)
-router.delete('/:id', (req, res) => {
+router.delete('/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
     Post.findByIdAndDelete(req.params.id)
         .then(post => {
             if (!post) {

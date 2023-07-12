@@ -1,16 +1,16 @@
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const { Following } = require('../models');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const { JWT_SECRET } = process.env;
-const app = express();
 
-// Apply authentication middleware to all other routes below this line
-app.use(passport.authenticate('jwt', { session: false }));
+const { Following } = require('../models/following');
+
+
 // GET /followings
-router.get('/', (req, res) => {
+router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
     Following.find({ username: req.body.username })
         .then((followings) => {
             if (followings) {
@@ -26,7 +26,7 @@ router.get('/', (req, res) => {
 });
 
 // POST /followings (create a new following)
-router.post('/', (req, res) => {
+router.post('/', passport.authenticate('jwt', { session: false }), (req, res) => {
     Following.create(req.body)
         .then((following) => {
             return res.json({ following: following });
@@ -38,7 +38,7 @@ router.post('/', (req, res) => {
 });
 
 // DELETE /followings/:id (delete a following)
-router.delete('/:id', (req, res) => {
+router.delete('/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
     Following.findByIdAndDelete(req.params.id)
         .then((following) => {
             return res.json({ message: 'Following Deleted' });

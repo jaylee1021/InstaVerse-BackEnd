@@ -1,12 +1,53 @@
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const { JWT_SECRET } = process.env;
-const app = express();
+
 
 const User = require('../models/user');
+
+// GET /users
+router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
+    User.find({})
+        .then((users) => {
+            return res.json({ users: users });
+        })
+        .catch(error => {
+            console.log('error', error);
+            return res.json({ message: 'There was an issue, please try again' });
+        });
+});
+
+router.get('/profile', passport.authenticate('jwt', { session: false }), (req, res) => {
+    console.log('====> inside /profile');
+    console.log(req.body);
+    console.log('====> user');
+    console.log(req.user);
+    const { id, fullName, email, username } = req.user; // object with user object inside
+    res.json({ id, fullName, email, username });
+});
+
+// GET /users/:id
+router.get('/:id', passport.authenticate('jwt', { session: false }), (req, res, error) => {
+    User.findById(req.params.id)
+        .then(user => {
+            if (user) {
+                res.header("Access-Control-Allow-Origin", "*");
+                return res.json({ user: user });
+            } else {
+                res.header("Access-Control-Allow-Origin", "*");
+                return res.json({ message: 'No User Found' });
+            }
+        })
+        .catch(error => {
+            console.log('error', error);
+            res.header("Access-Control-Allow-Origin", "*");
+            return res.json({ message: 'There was an issue, please try again' });
+        });
+});
 
 router.post('/signup', (req, res) => {
     // POST - adding the new user to the database
@@ -109,87 +150,8 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// Apply authentication middleware to all other routes below this line (routes above this line are not protected)
-app.use(passport.authenticate('jwt', { session: false }));
-
-// GET /users
-router.get('/', (req, res) => {
-    User.find({})
-        .then((users) => {
-            console.log('users', users);
-            return res.json({ users: users });
-        })
-        .catch(error => {
-            console.log('error', error);
-            return res.json({ message: 'There was an issue, please try again' });
-        });
-});
-
-router.get('/profile', passport.authenticate('jwt', { session: false }), (req, res) => {
-    console.log('====> inside /profile');
-    console.log(req.body);
-    console.log('====> user');
-    console.log(req.user);
-    const { id, firstName, lastName, email, address, jobTitle, birthdate, number } = req.user; // object with user object inside
-    res.json({ id, firstName, lastName, email, address, jobTitle, birthdate, number });
-});
-
-// GET /users/:id
-router.get('/:id', (req, res) => {
-    User.findById(req.params.id)
-        .then(user => {
-            if (user) {
-                res.header("Access-Control-Allow-Origin", "*");
-                return res.json({ user: user });
-            } else {
-                console.log('error', error);
-                res.header("Access-Control-Allow-Origin", "*");
-                return res.json({ message: 'No User Found' });
-            }
-        });
-});
-
-
-
-// POST /users (create a new user)
-// router.post('/new', (req, res) => {
-//     console.log('req.body', req.body);
-//     User.findOne({ username: req.body.username })
-//         .then(user => {
-//             if (user) {
-//                 return res.json({ message: 'The username is already taken' });
-//             } else {
-//                 User.findOne({ email: req.body.email })
-//                     .then(user => {
-//                         if (user) {
-//                             return res.json({ message: 'Email is already in use' });
-//                         } else {
-//                             User.create({
-//                                 username: req.body.username,
-//                                 email: req.body.email,
-//                                 password: req.body.password
-//                             })
-//                                 .then(newUser => {
-//                                     console.log('new user created ->', newUser);
-//                                     res.header('Access-Control-Allow-Origin', '*');
-//                                 })
-//                                 .catch((error) => {
-//                                     console.log('error', error);
-//                                     res.header("Access-Control-Allow-Origin", "*");
-//                                     return res.json({ message: 'error occured, please try again.' });
-//                                 });
-//                         }
-//                     });
-//             }
-//         })
-//         .catch(error => {
-//             console.log('error', error);
-//             return res.json({ message: 'There was an issue, please try again' });
-//         });
-// });
-
 // PUT /users/:id (update a user)
-router.put('/:id', (req, res) => {
+router.put('/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
     User.findByIdAndUpdate(req.params.id, req.body, { new: true })
         .then(user => {
             return res.json({ message: 'User was updated', user: user });
@@ -201,7 +163,7 @@ router.put('/:id', (req, res) => {
 });
 
 // DELETE /users/:id (delete a user)
-router.delete('/:id', (req, res) => {
+router.delete('/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
     User.findByIdAndDelete(req.params.id)
         .then(user => {
             return res.json({ message: `${user.username} was deleted` });

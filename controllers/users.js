@@ -10,7 +10,7 @@ const { JWT_SECRET } = process.env;
 const User = require('../models/user');
 
 // GET /users
-router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.get('/', (req, res) => {
     User.find({})
         .then((users) => {
             return res.json({ users: users });
@@ -31,20 +31,17 @@ router.get('/profile', passport.authenticate('jwt', { session: false }), (req, r
 });
 
 // GET /users/:id
-router.get('/:id', passport.authenticate('jwt', { session: false }), (req, res, error) => {
+router.get('/:id', (req, res, error) => {
     User.findById(req.params.id)
         .then(user => {
             if (user) {
-                res.header("Access-Control-Allow-Origin", "*");
                 return res.json({ user: user });
             } else {
-                res.header("Access-Control-Allow-Origin", "*");
                 return res.json({ message: 'No User Found' });
             }
         })
         .catch(error => {
             console.log('error', error);
-            res.header("Access-Control-Allow-Origin", "*");
             return res.json({ message: 'There was an issue, please try again' });
         });
 });

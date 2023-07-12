@@ -24,21 +24,21 @@ db.on('error', (err) => {
 });
 
 // create 50 users
-for (let i = 0; i < 50; i++) {
-    User.create(createRandomUser())
-        .then((user) => {
-            // console.log(i, user);
-        })
-        .catch((err) => {
-            console.log('error', err);
-        });
-}
+// for (let i = 0; i < 50; i++) {
+//     User.create(createRandomUser())
+//         .then((user) => {
+//             // console.log(i, user);
+//         })
+//         .catch((err) => {
+//             console.log('error', err);
+//         });
+// }
 
 // create 100 posts
-for (let i = 0; i < 100; i++) {
+for (let i = 0; i < 10; i++) {
     Post.create(createRandomPost())
         .then((post) => {
-            // console.log(i, post);
+
         })
         .catch((err) => {
             console.log('error', err);

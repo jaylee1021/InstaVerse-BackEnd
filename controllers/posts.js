@@ -6,12 +6,12 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const { JWT_SECRET } = process.env;
 
-const { Post } = require('../models/post');
+const Post = require('../models/post');
 
 
 
 // GET /posts
-router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.get('/', (req, res) => {
     Post.find({})
         .then((posts) => {
             if (posts) {
@@ -26,11 +26,27 @@ router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => 
         });
 });
 
+router.get('/:username', (req, res) => {
+    Post.find({ username: req.params.username })
+        .then((posts) => {
+            if (posts) {
+                res.json({ posts: posts });
+            } else {
+                res.json({ message: 'No Posts Found' });
+            }
+        })
+        .catch(error => {
+            console.log('error', error);
+            res.json({ message: 'There was an issue, please try again' });
+        });
+});
+
 // Get /posts/:id (used for editing comments)
-router.get('/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.get('/:id', (req, res) => {
     Post.findById(req.params.id)
         .then(post => {
             if (post) {
+                console.log('post', post);
                 res.json({ post: post });
             } else {
                 res.json({ message: 'No Post Found' });

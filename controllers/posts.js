@@ -11,7 +11,7 @@ const Post = require('../models/post');
 
 
 // GET /posts
-router.get('/', (req, res) => {
+router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
     Post.find({})
         .then((posts) => {
             if (posts) {
@@ -26,7 +26,7 @@ router.get('/', (req, res) => {
         });
 });
 
-router.get('/:username', (req, res) => {
+router.get('/:username', passport.authenticate('jwt', { session: false }), (req, res) => {
     Post.find({ username: req.params.username })
         .then((posts) => {
             if (posts) {
@@ -42,7 +42,7 @@ router.get('/:username', (req, res) => {
 });
 
 // Get /posts/:id (used for editing comments)
-router.get('/:id', (req, res) => {
+router.get('/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
     Post.findById(req.params.id)
         .then(post => {
             if (post) {

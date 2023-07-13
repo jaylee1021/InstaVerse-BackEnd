@@ -30,8 +30,22 @@ router.get('/profile', passport.authenticate('jwt', { session: false }), (req, r
     res.json({ id, fullName, email, username });
 });
 
+router.get('/email/:email', passport.authenticate('jwt', { session: false }), (req, res, error) => {
+    User.findById(req.params.email)
+        .then(user => {
+            if (user) {
+                return res.json({ user: user });
+            } else {
+                return res.json({ message: 'No User Found' });
+            }
+        })
+        .catch(error => {
+            console.log('error', error);
+            return res.json({ message: 'There was an issue, please try again' });
+        });
+});
 // GET /users/:id
-router.get('/:id', (req, res, error) => {
+router.get('/:id', passport.authenticate('jwt', { session: false }), (req, res, error) => {
     User.findById(req.params.id)
         .then(user => {
             if (user) {

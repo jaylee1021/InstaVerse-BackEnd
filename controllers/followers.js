@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const { JWT_SECRET } = process.env;
 
-const { follower } = require('../models/follower');
+const { Follower } = require('../models/follower');
 
 // GET /followers
 router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {

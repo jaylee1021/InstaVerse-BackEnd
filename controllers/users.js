@@ -5,6 +5,10 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const { JWT_SECRET } = process.env;
+const axios = require('axios');
+// import formidable from 'formidable';
+const formidable = require('formidable');
+const fs = require('fs');
 
 
 const User = require('../models/user');
@@ -45,7 +49,7 @@ router.get('/email/:email', passport.authenticate('jwt', { session: false }), (r
         });
 });
 // GET /users/:id
-router.get('/:id', passport.authenticate('jwt', { session: false }), (req, res, error) => {
+router.get('/:id', (req, res, error) => {
     User.findById(req.params.id)
         .then(user => {
             if (user) {
@@ -121,6 +125,47 @@ router.post('/signup', (req, res) => {
         });
 });
 
+router.post('/uploadProfilePicture', (req, res) => {
+    const form = new formidable.IncomingForm();
+    form.parse(req, async (err, fields, files) => {
+        if (err) {
+            // Handle error
+            res.status(500).json({ error: 'An error occurred' });
+        } else {
+            // Access the file using files.file
+            const file = files.file[0];
+
+            // Save file details to the database using Mongoose
+            try {
+                console.log('file', file);
+                fs.readFile(file.filepath, async (err, data) => {
+                    if (err) {
+                        console.log('err', err);
+                    }
+                    console.log('data', data);
+
+
+                    // // Send a response
+
+                    const formData = new FormData();
+                    formData.append('file', data);
+                    formData.append('upload_preset', 'instaverse');
+                    axios.post('https://api.cloudinary.com/v1_1/dtnostfrb/image/upload', formData)
+                        .then(response => {
+                            console.log('response', response);
+                            // res.json({ profilePicture: response.data.secure_url });
+                        })
+                        .catch(error => console.log('===> Error in Signup2', error));
+                });
+            } catch (error) {
+                // Handle database or other errors
+                res.status(500).json({ error: 'An error occurred' });
+            }
+        }
+    });
+    // axios.post('https://api.cloudinary.com/v1_1/dtnostfrb/image/upload', formData);
+});
+
 router.post('/login', async (req, res) => {
     // POST - finding a user and returning the user
     console.log('===> Inside of /login');
@@ -162,7 +207,7 @@ router.post('/login', async (req, res) => {
 });
 
 // PUT /users/:id (update a user)
-router.put('/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.put('/:id', (req, res) => {
     User.findByIdAndUpdate(req.params.id, req.body, { new: true })
         .then(user => {
             return res.json({ message: 'User was updated', user: user });

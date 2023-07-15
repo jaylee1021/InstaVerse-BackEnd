@@ -27,8 +27,15 @@ function createRandomFollower() {
     };
 }
 
+function createRandomFollowing() {
+    return {
+        username: faker.internet.userName(),
+    };
+}
+
 module.exports = {
     createRandomUser,
     createRandomPost,
-    createRandomFollower
+    createRandomFollower,
+    createRandomFollowing
 };

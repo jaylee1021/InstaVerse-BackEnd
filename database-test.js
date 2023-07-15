@@ -1,10 +1,11 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-const { createRandomUser, createRandomPost } = require('./utils');
+const { createRandomUser, createRandomPost, createRandomFollower } = require('./utils');
 
 // const { User, Post } = require('./models');
 const User = require('./models/user');
 const Post = require('./models/post');
+const Follower = require('./models/follower');
 
 mongoose.connect('mongodb://localhost/instaverse', {
     useNewUrlParser: true,
@@ -35,10 +36,21 @@ db.on('error', (err) => {
 // }
 
 // create 100 posts
-for (let i = 0; i < 10; i++) {
-    Post.create(createRandomPost())
-        .then((post) => {
+// for (let i = 0; i < 10; i++) {
+//     Post.create(createRandomPost())
+//         .then((post) => {
 
+//         })
+//         .catch((err) => {
+//             console.log('error', err);
+//         });
+// }
+
+// create 100 followers
+for (let i = 0; i < 100; i++) {
+    Follower.create(createRandomFollower())
+        .then((follower) => {
+            console.log('Created follower: ', follower);
         })
         .catch((err) => {
             console.log('error', err);

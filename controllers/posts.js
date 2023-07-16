@@ -11,7 +11,7 @@ const Post = require('../models/post');
 
 
 // GET /posts
-router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.get('/', (req, res) => {
     Post.find({})
         .then((posts) => {
             if (posts) {
@@ -26,7 +26,7 @@ router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => 
         });
 });
 
-router.get('/:username', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.get('/username/:username', (req, res) => {
     Post.find({ username: req.params.username })
         .then((posts) => {
             if (posts) {
@@ -42,7 +42,8 @@ router.get('/:username', passport.authenticate('jwt', { session: false }), (req,
 });
 
 // Get /posts/:id (used for editing comments)
-router.get('/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.get('/id/:id', (req, res) => {
+    console.log('req.params.id', req.params.id);
     Post.findById(req.params.id)
         .then(post => {
             if (post) {
@@ -100,7 +101,7 @@ router.post('/new', passport.authenticate('jwt', { session: false }), (req, res)
 });
 
 // POST /posts/:id/comments/new (create a new comment)
-router.post('/:id/comments/new', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.post('/:id/comments/new', (req, res) => {
     const newComment = {
         username: req.body.username,
         comment: req.body.comment,

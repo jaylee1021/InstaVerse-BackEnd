@@ -35,7 +35,7 @@ db.on('error', (err) => {
 // }
 
 // create 100 posts
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 7; i++) {
     Post.create(createRandomPost())
         .then((post) => {
 

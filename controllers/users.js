@@ -64,6 +64,23 @@ router.get('/:id', (req, res, error) => {
         });
 });
 
+// GET /users/:username
+router.get('/username/:username', (req, res, error) => {
+    // console.log('req.params.username', req.params);
+    User.findOne({ username: req.params.username })
+        .then(user => {
+            if (user) {
+                return res.json({ user: user });
+            } else {
+                return res.json({ message: 'No User Found' });
+            }
+        })
+        .catch(error => {
+            console.log('error', error);
+            return res.json({ message: 'There was an issue, please try again' });
+        });
+});
+
 router.post('/signup', (req, res) => {
     // POST - adding the new user to the database
     console.log('===> Inside of /signup');

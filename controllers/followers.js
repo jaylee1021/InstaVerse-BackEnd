@@ -9,7 +9,7 @@ const { JWT_SECRET } = process.env;
 const { Follower } = require('../models/follower');
 
 // GET /followers
-router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.get('/', (req, res) => {
     Follower.find({ username: req.body.username })
         .then((followers) => {
             if (followers) {

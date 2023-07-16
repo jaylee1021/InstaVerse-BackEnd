@@ -15,7 +15,7 @@ function createRandomUser() {
 
 function createRandomPost() {
     return {
-        username: faker.internet.userName(),
+        username: 'jamesissad',
         caption: faker.lorem.sentence(),
         photo: faker.image.url()
     };

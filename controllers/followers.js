@@ -10,7 +10,7 @@ const { Follower } = require('../models/follower');
 
 // GET /followers
 router.get('/', (req, res) => {
-    Follower.find({ username: req.body.username })
+    Follower.find({})
         .then((followers) => {
             if (followers) {
                 return res.json({ followers: followers });

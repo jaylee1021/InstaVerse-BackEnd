@@ -6,26 +6,26 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const { JWT_SECRET } = process.env;
 
-const { Follower } = require('../models/follower');
+const Follower = require('../models/follower');
 
 // GET /followers
 router.get('/', (req, res) => {
     Follower.find({})
         .then((followers) => {
-            if (followers) {
+            if (followers.length > 0) {
                 return res.json({ followers: followers });
             } else {
                 return res.json({ message: 'No Followers Found' });
             }
         })
-        .catch(error => {
+        .catch((error) => {
             console.log('error', error);
             res.json({ message: 'There was an issue, please try again' });
         });
 });
 
 // POST /followers (create a new follower)
-router.post('/', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.post('/', (req, res) => {
     Follower.create(req.body)
         .then((follower) => {
             return res.json({ follower: follower });
@@ -37,7 +37,7 @@ router.post('/', passport.authenticate('jwt', { session: false }), (req, res) =>
 });
 
 // DELETE /followers/:id (delete a follower)
-router.delete('/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.delete('/:id', (req, res) => {
     Follower.findByIdAndDelete(req.params.id)
         .then((follower) => {
             return res.json({ message: 'Follower Deleted' });
@@ -49,3 +49,5 @@ router.delete('/:id', passport.authenticate('jwt', { session: false }), (req, re
 });
 
 module.exports = router;
+
+// passport.authenticate('jwt', { session: false }),

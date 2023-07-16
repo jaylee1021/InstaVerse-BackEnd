@@ -6,20 +6,20 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const { JWT_SECRET } = process.env;
 
-const { Following } = require('../models/following');
+const Following = require('../models/following');
 
 
 // GET /followings
-router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
-    Following.find({ username: req.body.username })
-        .then((followings) => {
-            if (followings) {
-                return res.json({ followings: followings });
+router.get('/', (req, res) => {
+    Following.find({})
+        .then((following) => {
+            if (following.length > 0) {
+                return res.json({ following: following });
             } else {
-                return res.json({ message: 'No Followers Found' });
+                return res.json({ message: 'No following Found' });
             }
         })
-        .catch(error => {
+        .catch((error) => {
             console.log('error', error);
             res.json({ message: 'There was an issue, please try again' });
         });

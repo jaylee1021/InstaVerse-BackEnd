@@ -1,10 +1,12 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-const { createRandomUser, createRandomPost } = require('./utils');
+const { createRandomUser, createRandomPost, createRandomFollower, createRandomFollowing } = require('./utils');
 
 // const { User, Post } = require('./models');
 const User = require('./models/user');
 const Post = require('./models/post');
+const Follower = require('./models/follower');
+const Following = require('./models/following');
 
 mongoose.connect('mongodb://localhost/instaverse', {
     useNewUrlParser: true,

@@ -18,7 +18,8 @@ function createRandomPost() {
     return {
         username: 'randomdori',
         caption: faker.lorem.sentence(),
-        photo: faker.image.url()
+        // photo: faker.image.url()
+        photo: 'https://res.cloudinary.com/instaversecloud/image/upload/v1689454484/InstaVerse/agezbvn5otc5eehcxxj5.jpg'
     };
 }
 

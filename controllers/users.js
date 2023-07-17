@@ -86,7 +86,6 @@ router.get('/username/:username/posts/id/:id', (req, res) => {
         .then(user => {
             if (user) {
                 const post = user.posts.id(req.params.id);
-                console.log('post', post);
                 res.json({ post: post });
             } else {
                 res.json({ message: 'No Post Found' });
@@ -334,7 +333,8 @@ router.post('/username/:username/posts/:id/comments/new', (req, res) => {
                     post.comments.push(newComment);
                     user.save()
                         .then((result) => {
-                            return res.json({ post: result });
+                            console.log('post', post);
+                            return res.json({ post });
                         })
                         .catch(err => {
                             console.log('error', err);

@@ -11,7 +11,7 @@ const Post = require('../models/post');
 
 
 // GET /posts
-router.get('/', (req, res) => {
+router.get('/posts/', (req, res) => {
     Post.find({})
         .then((posts) => {
             if (posts) {
@@ -26,7 +26,7 @@ router.get('/', (req, res) => {
         });
 });
 
-router.get('/username/:username', (req, res) => {
+router.get('/posts/username/:username', (req, res) => {
     Post.find({ username: req.params.username })
         .then((posts) => {
             if (posts) {
@@ -42,7 +42,7 @@ router.get('/username/:username', (req, res) => {
 });
 
 // Get /posts/:id (used for editing comments)
-router.get('/id/:id', (req, res) => {
+router.get('/posts/id/:id', (req, res) => {
     console.log('req.params.id', req.params.id);
     Post.findById(req.params.id)
         .then(post => {
@@ -60,7 +60,7 @@ router.get('/id/:id', (req, res) => {
 });
 
 // GET /comments by comment Id
-router.get('/:id/comments/:commentId', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.get('/posts/:id/comments/:commentId', passport.authenticate('jwt', { session: false }), (req, res) => {
     Post.findById(req.params.id)
         .then(post => {
             if (!post) {
@@ -83,7 +83,7 @@ router.get('/:id/comments/:commentId', passport.authenticate('jwt', { session: f
 });
 
 // POST /posts (create a new post)
-router.post('/new', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.post('/posts/new', passport.authenticate('jwt', { session: false }), (req, res) => {
     const newPost = {
         username: req.body.username,
         caption: req.body.caption,
@@ -101,7 +101,7 @@ router.post('/new', passport.authenticate('jwt', { session: false }), (req, res)
 });
 
 // POST /posts/:id/comments/new (create a new comment)
-router.post('/:id/comments/new', (req, res) => {
+router.post('/posts/:id/comments/new', (req, res) => {
     const newComment = {
         username: req.body.username,
         comment: req.body.comment,
@@ -131,7 +131,7 @@ router.post('/:id/comments/new', (req, res) => {
 });
 
 // PUT /posts/:id (update a post)
-router.put('/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.put('/posts/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
     Post.findById(req.params.id)
         .then(post => {
             if (!post) {
@@ -156,7 +156,7 @@ router.put('/:id', passport.authenticate('jwt', { session: false }), (req, res) 
 });
 
 // Delete /posts/:id (delete a post)
-router.delete('/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.delete('/posts/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
     Post.findByIdAndDelete(req.params.id)
         .then(post => {
             if (!post) {

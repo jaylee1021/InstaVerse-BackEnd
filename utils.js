@@ -9,13 +9,14 @@ function createRandomUser() {
     return {
         fullName: fullName,
         email: email,
-        username: faker.internet.userName()
+        username: faker.internet.userName(),
+        password: '1234567890'
     };
 }
 
 function createRandomPost() {
     return {
-        username: 'jamesissad',
+        username: 'randomdori',
         caption: faker.lorem.sentence(),
         photo: faker.image.url()
     };

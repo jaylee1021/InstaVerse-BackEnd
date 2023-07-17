@@ -25,6 +25,22 @@ router.get('/', (req, res) => {
         });
 });
 
+// GET /users/posts
+router.get('/posts/', (req, res) => {
+    Post.find({})
+        .then((posts) => {
+            if (posts) {
+                res.json({ posts: posts });
+            } else {
+                res.json({ message: 'No Posts Found' });
+            }
+        })
+        .catch(error => {
+            console.log('error', error);
+            res.json({ message: 'There was an issue, please try again' });
+        });
+});
+
 router.get('/profile', passport.authenticate('jwt', { session: false }), (req, res) => {
     console.log('====> inside /profile');
     console.log(req.body);
@@ -64,6 +80,24 @@ router.get('/:id', (req, res, error) => {
         });
 });
 
+// Get /posts/:id (used for editing comments)
+router.get('/username/:username/posts/id/:id', (req, res) => {
+    User.findOne({ username: req.params.username })
+        .then(user => {
+            if (user) {
+                const post = user.posts.id(req.params.id);
+                console.log('post', post);
+                res.json({ post: post });
+            } else {
+                res.json({ message: 'No Post Found' });
+            }
+        })
+        .catch(error => {
+            console.log('error', error);
+            res.json({ message: 'There was an issue, please try again' });
+        });
+});
+
 // GET /users/:username
 router.get('/username/:username', (req, res, error) => {
     // console.log('req.params.username', req.params);
@@ -78,6 +112,44 @@ router.get('/username/:username', (req, res, error) => {
         .catch(error => {
             console.log('error', error);
             return res.json({ message: 'There was an issue, please try again' });
+        });
+});
+
+router.get('/posts/username/:username', (req, res) => {
+    Post.find({ username: req.params.username })
+        .then((posts) => {
+            if (posts) {
+                res.json({ posts: posts });
+            } else {
+                res.json({ message: 'No Posts Found' });
+            }
+        })
+        .catch(error => {
+            console.log('error', error);
+            res.json({ message: 'There was an issue, please try again' });
+        });
+});
+
+// GET /comments by comment Id
+router.get('/posts/:id/comments/:commentId', passport.authenticate('jwt', { session: false }), (req, res) => {
+    Post.findById(req.params.id)
+        .then(post => {
+            if (!post) {
+                console.log('post cannot be found');
+                return res.json({ message: 'Post cannot be found' });
+            }
+            // find comment by id
+            const comment = post.comments.id(req.params.commentId);
+            console.log('--- find comment ---', comment);
+            if (!comment) {
+                console.log('comment cannot be found');
+                return res.json({ message: 'Comment cannot be found' });
+            }
+            return res.json({ comment });
+        })
+        .catch(err => {
+            console.log('error', err);
+            return req.json({ message: 'Comment was not found try again...' });
         });
 });
 
@@ -139,6 +211,24 @@ router.post('/signup', (req, res) => {
         .catch(err => {
             console.log('Error finding user', err);
             res.json({ message: 'Error occured... Please try again.' });
+        });
+});
+
+// POST /posts (create a new post)
+router.post('/username/:username/posts/new', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const newPost = {
+        username: req.body.username,
+        caption: req.body.caption,
+        photo: req.body.photo,
+        likes: 0
+    };
+    Post.create(newPost)
+        .then((post) => {
+            return res.json({ post: post });
+        })
+        .catch(error => {
+            console.log('error', error);
+            res.json({ message: 'There was an issue, please try again' });
         });
 });
 
@@ -223,6 +313,42 @@ router.post('/login', async (req, res) => {
     }
 });
 
+// POST /posts/:id/comments/new (create a new comment)
+router.post('/username/:username/posts/:id/comments/new', (req, res) => {
+    const newComment = {
+        username: req.body.username,
+        comment: req.body.comment,
+        likes: 0
+    };
+    User.findOne({ username: req.params.username })
+        .then(user => {
+            if (!user) {
+                console.log('user cannot be found');
+                return res.json({ message: 'User cannot be found' });
+            } else {
+                const post = user.posts.id(req.params.id);
+                if (!post) {
+                    console.log('post cannot be found');
+                    return res.json({ message: 'Post cannot be found' });
+                } else {
+                    post.comments.push(newComment);
+                    user.save()
+                        .then((result) => {
+                            return res.json({ post: result });
+                        })
+                        .catch(err => {
+                            console.log('error', err);
+                            return res.json({ message: 'Comment was not saved try again...' });
+                        });
+                }
+            }
+        })
+        .catch(err => {
+            console.log('error', err);
+            return res.json({ message: 'Comment was not saved try again...' });
+        });
+});
+
 // PUT /users/:id (update a user)
 router.put('/:id', (req, res) => {
     User.findByIdAndUpdate(req.params.id, req.body, { new: true })
@@ -235,6 +361,31 @@ router.put('/:id', (req, res) => {
         });
 });
 
+// PUT /posts/:id (update a post)
+router.put('/username/:username/posts/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+    Post.findById(req.params.id)
+        .then(post => {
+            if (!post) {
+                console.log('post cannot be found');
+                return res.json({ message: 'Post cannot be found' });
+            } else {
+                post.set(req.body);
+                post.save()
+                    .then((result) => {
+                        return res.json({ post });
+                    })
+                    .catch(err => {
+                        console.log('error', err);
+                        return res.json({ message: 'Post was not updated try again...' });
+                    });
+            }
+        })
+        .catch(err => {
+            console.log('error', err);
+            return res.json({ message: 'Post was not updated try again...' });
+        });
+});
+
 // DELETE /users/:id (delete a user)
 router.delete('/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
     User.findByIdAndDelete(req.params.id)
@@ -244,6 +395,24 @@ router.delete('/:id', passport.authenticate('jwt', { session: false }), (req, re
         .catch(error => {
             console.log('error', error);
             return res.json({ message: 'There was an issue, please try again' });
+        });
+});
+
+// Delete /posts/:id (delete a post)
+router.delete('/posts/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+    Post.findByIdAndDelete(req.params.id)
+        .then(post => {
+            if (!post) {
+
+                console.log('post cannot be found');
+                return res.json({ message: 'Post cannot be found' });
+            } else {
+                return res.json({ message: `post at ${req.params.id} was deleted` }, { post: post });
+            }
+        })
+        .catch(err => {
+            console.log('error', err);
+            return res.json({ message: 'Post was not deleted try again...' });
         });
 });
 

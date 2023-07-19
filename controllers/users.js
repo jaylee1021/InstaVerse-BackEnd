@@ -11,7 +11,7 @@ const formidable = require('formidable');
 const fs = require('fs');
 
 
-const User = require('../models/user');
+const { User } = require('../models');
 
 // GET /users
 router.get('/', (req, res) => {
@@ -388,6 +388,7 @@ router.put('/username/:username/posts/:id', passport.authenticate('jwt', { sessi
 
 // DELETE /users/:id (delete a user)
 router.delete('/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+    console.log('entering delete route', req.params.id);
     User.findByIdAndDelete(req.params.id)
         .then(user => {
             return res.json({ message: `${user.username} was deleted` });

@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const { JWT_SECRET } = process.env;
 
-const Post = require('../models/post');
+const { Post } = require('../models');
 
 
 

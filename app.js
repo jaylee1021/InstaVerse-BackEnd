@@ -5,8 +5,17 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const passport = require('passport');
 require('./config/passport')(passport);
+const cloudinary = require('cloudinary').v2;
 
 const app = express();
+
+
+// Cloudinary Config
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 // middleware
 app.use(express.urlencoded({ extended: false }));

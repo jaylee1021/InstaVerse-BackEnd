@@ -11,7 +11,7 @@ const Post = require('../models/post');
 
 
 // GET /posts
-router.get('/posts/', (req, res) => {
+router.get('/', (req, res) => {
     Post.find({})
         .then((posts) => {
             if (posts) {
@@ -26,8 +26,24 @@ router.get('/posts/', (req, res) => {
         });
 });
 
-router.get('/posts/username/:username', (req, res) => {
-    Post.find({ username: req.params.username })
+// router.get('/posts/username/:username', (req, res) => {
+//     Post.find({ username: req.params.username })
+//         .then((posts) => {
+//             if (posts) {
+//                 res.json({ posts: posts });
+//             } else {
+//                 res.json({ message: 'No Posts Found' });
+//             }
+//         })
+//         .catch(error => {
+//             console.log('error', error);
+//             res.json({ message: 'There was an issue, please try again' });
+//         });
+// });
+
+// Get /posts/:userId (used for profile page)
+router.get('/:userId', (req, res) => {
+    Post.find({ createdBy: req.params.userId })
         .then((posts) => {
             if (posts) {
                 res.json({ posts: posts });
@@ -42,9 +58,9 @@ router.get('/posts/username/:username', (req, res) => {
 });
 
 // Get /posts/:id (used for editing comments)
-router.get('/posts/id/:id', (req, res) => {
-    console.log('req.params.id', req.params.id);
-    Post.findById(req.params.id)
+router.get('/post/:postId', (req, res) => {
+    console.log('req.params.id', req.params.postId);
+    Post.findById(req.params.postId)
         .then(post => {
             if (post) {
                 console.log('post', post);
@@ -60,7 +76,7 @@ router.get('/posts/id/:id', (req, res) => {
 });
 
 // GET /comments by comment Id
-router.get('/posts/:id/comments/:commentId', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.get('/post/:id/comments/:commentId', passport.authenticate('jwt', { session: false }), (req, res) => {
     Post.findById(req.params.id)
         .then(post => {
             if (!post) {
@@ -83,12 +99,11 @@ router.get('/posts/:id/comments/:commentId', passport.authenticate('jwt', { sess
 });
 
 // POST /posts (create a new post)
-router.post('/posts/new', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.post('/new', (req, res) => {
     const newPost = {
-        username: req.body.username,
+        createdBy: req.body.createdBy,
         caption: req.body.caption,
-        photo: req.body.photo,
-        likes: 0
+        photo: req.body.photo
     };
     Post.create(newPost)
         .then((post) => {
@@ -101,11 +116,10 @@ router.post('/posts/new', passport.authenticate('jwt', { session: false }), (req
 });
 
 // POST /posts/:id/comments/new (create a new comment)
-router.post('/posts/:id/comments/new', (req, res) => {
+router.post('/:id/comments/new', (req, res) => {
     const newComment = {
-        username: req.body.username,
-        comment: req.body.comment,
-        likes: 0
+        createdBy: req.body.createdBy,
+        comment: req.body.comment
     };
     Post.findById(req.params.id)
         .then(post => {

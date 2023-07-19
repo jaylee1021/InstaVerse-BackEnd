@@ -1,20 +1,20 @@
 const mongoose = require('mongoose');
 
-const commentSchema = new mongoose.Schema({
-    username: String,
-    comment: String,
-    likes: Number
-}, { timestamps: true });
+// const commentSchema = new mongoose.Schema({
+//     comment: String,
+//     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+//     creatdBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+// }, { timestamps: true });
 
 
-// create post schema
-const postSchema = new mongoose.Schema({
-    username: String,
-    caption: String,
-    photo: String,
-    likes: Number,
-    comments: [commentSchema]
-}, { timestamps: true });
+// // create post schema
+// const postSchema = new mongoose.Schema({
+//     caption: String,
+//     photo: String,
+//     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+//     comments: [commentSchema],
+//     creatdBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+// }, { timestamps: true });
 
 // create user schema
 const userSchema = new mongoose.Schema({
@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
     pronouns: String,
     profilePicture: String,
-    posts: [postSchema],
+    // posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Follower' }],
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Following' }],
     bio: String,

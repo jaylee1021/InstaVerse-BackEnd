@@ -25,21 +25,21 @@ router.get('/', (req, res) => {
         });
 });
 
-// GET /users/posts
-router.get('/posts/', (req, res) => {
-    Post.find({})
-        .then((posts) => {
-            if (posts) {
-                res.json({ posts: posts });
-            } else {
-                res.json({ message: 'No Posts Found' });
-            }
-        })
-        .catch(error => {
-            console.log('error', error);
-            res.json({ message: 'There was an issue, please try again' });
-        });
-});
+// // GET /users/posts
+// router.get('/posts/', (req, res) => {
+//     Post.find({})
+//         .then((posts) => {
+//             if (posts) {
+//                 res.json({ posts: posts });
+//             } else {
+//                 res.json({ message: 'No Posts Found' });
+//             }
+//         })
+//         .catch(error => {
+//             console.log('error', error);
+//             res.json({ message: 'There was an issue, please try again' });
+//         });
+// });
 
 router.get('/profile', passport.authenticate('jwt', { session: false }), (req, res) => {
     console.log('====> inside /profile');
@@ -50,20 +50,20 @@ router.get('/profile', passport.authenticate('jwt', { session: false }), (req, r
     res.json({ id, fullName, email, username });
 });
 
-router.get('/email/:email', passport.authenticate('jwt', { session: false }), (req, res, error) => {
-    User.findById(req.params.email)
-        .then(user => {
-            if (user) {
-                return res.json({ user: user });
-            } else {
-                return res.json({ message: 'No User Found' });
-            }
-        })
-        .catch(error => {
-            console.log('error', error);
-            return res.json({ message: 'There was an issue, please try again' });
-        });
-});
+// router.get('/email/:email', passport.authenticate('jwt', { session: false }), (req, res, error) => {
+//     User.findById(req.params.email)
+//         .then(user => {
+//             if (user) {
+//                 return res.json({ user: user });
+//             } else {
+//                 return res.json({ message: 'No User Found' });
+//             }
+//         })
+//         .catch(error => {
+//             console.log('error', error);
+//             return res.json({ message: 'There was an issue, please try again' });
+//         });
+// });
 // GET /users/:id
 router.get('/:id', (req, res, error) => {
     User.findById(req.params.id)
@@ -81,76 +81,76 @@ router.get('/:id', (req, res, error) => {
 });
 
 // Get /posts/:id (used for editing comments)
-router.get('/username/:username/posts/id/:id', (req, res) => {
-    User.findOne({ username: req.params.username })
-        .then(user => {
-            if (user) {
-                const post = user.posts.id(req.params.id);
-                res.json({ post: post });
-            } else {
-                res.json({ message: 'No Post Found' });
-            }
-        })
-        .catch(error => {
-            console.log('error', error);
-            res.json({ message: 'There was an issue, please try again' });
-        });
-});
+// router.get('/username/:username/posts/id/:id', (req, res) => {
+//     User.findOne({ username: req.params.username })
+//         .then(user => {
+//             if (user) {
+//                 const post = user.posts.id(req.params.id);
+//                 res.json({ post: post });
+//             } else {
+//                 res.json({ message: 'No Post Found' });
+//             }
+//         })
+//         .catch(error => {
+//             console.log('error', error);
+//             res.json({ message: 'There was an issue, please try again' });
+//         });
+// });
 
-// GET /users/:username
-router.get('/username/:username', (req, res, error) => {
-    // console.log('req.params.username', req.params);
-    User.findOne({ username: req.params.username })
-        .then(user => {
-            if (user) {
-                return res.json({ user: user });
-            } else {
-                return res.json({ message: 'No User Found' });
-            }
-        })
-        .catch(error => {
-            console.log('error', error);
-            return res.json({ message: 'There was an issue, please try again' });
-        });
-});
+// // GET /users/:username
+// router.get('/username/:username', (req, res, error) => {
+//     // console.log('req.params.username', req.params);
+//     User.findOne({ username: req.params.username })
+//         .then(user => {
+//             if (user) {
+//                 return res.json({ user: user });
+//             } else {
+//                 return res.json({ message: 'No User Found' });
+//             }
+//         })
+//         .catch(error => {
+//             console.log('error', error);
+//             return res.json({ message: 'There was an issue, please try again' });
+//         });
+// });
 
-router.get('/posts/username/:username', (req, res) => {
-    Post.find({ username: req.params.username })
-        .then((posts) => {
-            if (posts) {
-                res.json({ posts: posts });
-            } else {
-                res.json({ message: 'No Posts Found' });
-            }
-        })
-        .catch(error => {
-            console.log('error', error);
-            res.json({ message: 'There was an issue, please try again' });
-        });
-});
+// router.get('/posts/username/:username', (req, res) => {
+//     Post.find({ username: req.params.username })
+//         .then((posts) => {
+//             if (posts) {
+//                 res.json({ posts: posts });
+//             } else {
+//                 res.json({ message: 'No Posts Found' });
+//             }
+//         })
+//         .catch(error => {
+//             console.log('error', error);
+//             res.json({ message: 'There was an issue, please try again' });
+//         });
+// });
 
-// GET /comments by comment Id
-router.get('/posts/:id/comments/:commentId', passport.authenticate('jwt', { session: false }), (req, res) => {
-    Post.findById(req.params.id)
-        .then(post => {
-            if (!post) {
-                console.log('post cannot be found');
-                return res.json({ message: 'Post cannot be found' });
-            }
-            // find comment by id
-            const comment = post.comments.id(req.params.commentId);
-            console.log('--- find comment ---', comment);
-            if (!comment) {
-                console.log('comment cannot be found');
-                return res.json({ message: 'Comment cannot be found' });
-            }
-            return res.json({ comment });
-        })
-        .catch(err => {
-            console.log('error', err);
-            return req.json({ message: 'Comment was not found try again...' });
-        });
-});
+// // GET /comments by comment Id
+// router.get('/posts/:id/comments/:commentId', passport.authenticate('jwt', { session: false }), (req, res) => {
+//     Post.findById(req.params.id)
+//         .then(post => {
+//             if (!post) {
+//                 console.log('post cannot be found');
+//                 return res.json({ message: 'Post cannot be found' });
+//             }
+//             // find comment by id
+//             const comment = post.comments.id(req.params.commentId);
+//             console.log('--- find comment ---', comment);
+//             if (!comment) {
+//                 console.log('comment cannot be found');
+//                 return res.json({ message: 'Comment cannot be found' });
+//             }
+//             return res.json({ comment });
+//         })
+//         .catch(err => {
+//             console.log('error', err);
+//             return req.json({ message: 'Comment was not found try again...' });
+//         });
+// });
 
 router.post('/signup', (req, res) => {
     // POST - adding the new user to the database
@@ -214,63 +214,79 @@ router.post('/signup', (req, res) => {
 });
 
 // POST /posts (create a new post)
-router.post('/username/:username/posts/new', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.post('/username/:username/posts/new', (req, res) => {
     const newPost = {
         username: req.body.username,
         caption: req.body.caption,
         photo: req.body.photo,
         likes: 0
     };
-    Post.create(newPost)
-        .then((post) => {
-            return res.json({ post: post });
+    console.log('newPost', newPost);
+    User.findOne({ username: req.params.username })
+        .then(user => {
+            if (!user) {
+                console.log('user cannot be found');
+                return res.json({ message: 'User cannot be found' });
+            } else {
+                user.posts.push(newPost);
+                user.save()
+                    .then((result) => {
+                        console.log('post', post);
+                        return res.json({ post });
+                    })
+                    .catch(err => {
+                        console.log('error', err);
+                        return res.json({ message: 'Comment was not saved try again...1' });
+                    });
+            }
         })
-        .catch(error => {
-            console.log('error', error);
-            res.json({ message: 'There was an issue, please try again' });
+
+        .catch(err => {
+            console.log('error', err);
+            return res.json({ message: 'Comment was not saved try again...2' });
         });
 });
 
-router.post('/uploadProfilePicture', (req, res) => {
-    const form = new formidable.IncomingForm();
-    form.parse(req, async (err, fields, files) => {
-        if (err) {
-            // Handle error
-            res.status(500).json({ error: 'An error occurred' });
-        } else {
-            // Access the file using files.file
-            const file = files.file[0];
+// router.post('/uploadProfilePicture', (req, res) => {
+//     const form = new formidable.IncomingForm();
+//     form.parse(req, async (err, fields, files) => {
+//         if (err) {
+//             // Handle error
+//             res.status(500).json({ error: 'An error occurred' });
+//         } else {
+//             // Access the file using files.file
+//             const file = files.file[0];
 
-            // Save file details to the database using Mongoose
-            try {
-                console.log('file', file);
-                fs.readFile(file.filepath, async (err, data) => {
-                    if (err) {
-                        console.log('err', err);
-                    }
-                    console.log('data', data);
+//             // Save file details to the database using Mongoose
+//             try {
+//                 console.log('file', file);
+//                 fs.readFile(file.filepath, async (err, data) => {
+//                     if (err) {
+//                         console.log('err', err);
+//                     }
+//                     console.log('data', data);
 
 
-                    // // Send a response
+//                     // // Send a response
 
-                    const formData = new FormData();
-                    formData.append('file', data);
-                    formData.append('upload_preset', 'instaverse');
-                    axios.post('https://api.cloudinary.com/v1_1/dtnostfrb/image/upload', formData)
-                        .then(response => {
-                            console.log('response', response);
-                            // res.json({ profilePicture: response.data.secure_url });
-                        })
-                        .catch(error => console.log('===> Error in Signup2', error));
-                });
-            } catch (error) {
-                // Handle database or other errors
-                res.status(500).json({ error: 'An error occurred' });
-            }
-        }
-    });
-    // axios.post('https://api.cloudinary.com/v1_1/dtnostfrb/image/upload', formData);
-});
+//                     const formData = new FormData();
+//                     formData.append('file', data);
+//                     formData.append('upload_preset', 'instaverse');
+//                     axios.post('https://api.cloudinary.com/v1_1/dtnostfrb/image/upload', formData)
+//                         .then(response => {
+//                             console.log('response', response);
+//                             // res.json({ profilePicture: response.data.secure_url });
+//                         })
+//                         .catch(error => console.log('===> Error in Signup2', error));
+//                 });
+//             } catch (error) {
+//                 // Handle database or other errors
+//                 res.status(500).json({ error: 'An error occurred' });
+//             }
+//         }
+//     });
+//     // axios.post('https://api.cloudinary.com/v1_1/dtnostfrb/image/upload', formData);
+// });
 
 router.post('/login', async (req, res) => {
     // POST - finding a user and returning the user

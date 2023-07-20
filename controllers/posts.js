@@ -42,7 +42,7 @@ router.get('/', (req, res) => {
 // });
 
 // Get /posts/:userId (used for profile page)
-router.get('/:userId', (req, res) => {
+router.get('/:userId', passport.authenticate('jwt', { session: false }), (req, res) => {
     Post.find({ createdBy: req.params.userId })
         .then((posts) => {
             if (posts) {
@@ -97,6 +97,7 @@ router.get('/post/:id/comments/:commentId', passport.authenticate('jwt', { sessi
             return req.json({ message: 'Comment was not found try again...' });
         });
 });
+
 
 // POST /posts (create a new post)
 router.post('/new', (req, res) => {

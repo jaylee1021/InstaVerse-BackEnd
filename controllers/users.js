@@ -42,9 +42,9 @@ router.get('/', (req, res) => {
 // });
 
 router.get('/profile', passport.authenticate('jwt', { session: false }), (req, res) => {
-    console.log('====> inside /profile');
+    // console.log('====> inside /profile');
     console.log(req.body);
-    console.log('====> user');
+    // console.log('====> user');
     console.log(req.user);
     const { id, fullName, email, username } = req.user; // object with user object inside
     res.json({ id, fullName, email, username });
@@ -154,8 +154,8 @@ router.get('/:id', (req, res, error) => {
 
 router.post('/signup', (req, res) => {
     // POST - adding the new user to the database
-    console.log('===> Inside of /signup');
-    console.log('===> /register -> req.body', req.body);
+    // console.log('===> Inside of /signup');
+    // console.log('===> /register -> req.body', req.body);
 
     User.findOne({ email: req.body.email })
         .then(user => {
@@ -221,7 +221,7 @@ router.post('/username/:username/posts/new', (req, res) => {
         photo: req.body.photo,
         likes: 0
     };
-    console.log('newPost', newPost);
+    // console.log('newPost', newPost);
     User.findOne({ username: req.params.username })
         .then(user => {
             if (!user) {
@@ -290,15 +290,15 @@ router.post('/username/:username/posts/new', (req, res) => {
 
 router.post('/login', async (req, res) => {
     // POST - finding a user and returning the user
-    console.log('===> Inside of /login');
-    console.log('===> /login -> req.body', req.body);
+    // console.log('===> Inside of /login');
+    // console.log('===> /login -> req.body', req.body);
 
     const foundUser = await User.findOne({ email: req.body.email });
 
     if (foundUser) {
         // user is in the DB
         let isMatch = await bcrypt.compareSync(req.body.password, foundUser.password);
-        console.log('Does the passwords match?', isMatch);
+        // console.log('Does the passwords match?', isMatch);
         if (isMatch) {
             // if user match, then we want to send a JSON Web Token
             // Create a token payload
@@ -315,7 +315,7 @@ router.post('/login', async (req, res) => {
                     res.status(400).json({ message: 'Session has endedd, please log in again' });
                 }
                 const legit = jwt.verify(token, JWT_SECRET, { expiresIn: 60 });
-                console.log('===> legit', legit);
+                // console.log('===> legit', legit);
                 delete legit.password; // remove before showing response
                 res.json({ success: true, token: `Bearer ${token}`, userData: legit });
             });
@@ -329,41 +329,41 @@ router.post('/login', async (req, res) => {
 });
 
 // POST /posts/:id/comments/new (create a new comment)
-router.post('/username/:username/posts/:id/comments/new', (req, res) => {
-    const newComment = {
-        username: req.body.username,
-        comment: req.body.comment,
-        likes: 0
-    };
-    User.findOne({ username: req.params.username })
-        .then(user => {
-            if (!user) {
-                console.log('user cannot be found');
-                return res.json({ message: 'User cannot be found' });
-            } else {
-                const post = user.posts.id(req.params.id);
-                if (!post) {
-                    console.log('post cannot be found');
-                    return res.json({ message: 'Post cannot be found' });
-                } else {
-                    post.comments.push(newComment);
-                    user.save()
-                        .then((result) => {
-                            console.log('post', post);
-                            return res.json({ post });
-                        })
-                        .catch(err => {
-                            console.log('error', err);
-                            return res.json({ message: 'Comment was not saved try again...' });
-                        });
-                }
-            }
-        })
-        .catch(err => {
-            console.log('error', err);
-            return res.json({ message: 'Comment was not saved try again...' });
-        });
-});
+// router.post('/username/:username/posts/:id/comments/new', (req, res) => {
+//     const newComment = {
+//         username: req.body.username,
+//         comment: req.body.comment,
+//         likes: 0
+//     };
+//     User.findOne({ username: req.params.username })
+//         .then(user => {
+//             if (!user) {
+//                 console.log('user cannot be found');
+//                 return res.json({ message: 'User cannot be found' });
+//             } else {
+//                 const post = user.posts.id(req.params.id);
+//                 if (!post) {
+//                     console.log('post cannot be found');
+//                     return res.json({ message: 'Post cannot be found' });
+//                 } else {
+//                     post.comments.push(newComment);
+//                     user.save()
+//                         .then((result) => {
+//                             console.log('post', post);
+//                             return res.json({ post });
+//                         })
+//                         .catch(err => {
+//                             console.log('error', err);
+//                             return res.json({ message: 'Comment was not saved try again...' });
+//                         });
+//                 }
+//             }
+//         })
+//         .catch(err => {
+//             console.log('error', err);
+//             return res.json({ message: 'Comment was not saved try again...' });
+//         });
+// });
 
 // PUT /users/:id (update a user)
 router.put('/:id', (req, res) => {
@@ -404,7 +404,7 @@ router.put('/username/:username/posts/:id', passport.authenticate('jwt', { sessi
 
 // DELETE /users/:id (delete a user)
 router.delete('/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
-    console.log('entering delete route', req.params.id);
+    // console.log('entering delete route', req.params.id);
     User.findByIdAndDelete(req.params.id)
         .then(user => {
             return res.json({ message: `${user.username} was deleted` });
@@ -416,21 +416,21 @@ router.delete('/:id', passport.authenticate('jwt', { session: false }), (req, re
 });
 
 // Delete /posts/:id (delete a post)
-router.delete('/posts/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
-    Post.findByIdAndDelete(req.params.id)
-        .then(post => {
-            if (!post) {
+// router.delete('/posts/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+//     Post.findByIdAndDelete(req.params.id)
+//         .then(post => {
+//             if (!post) {
 
-                console.log('post cannot be found');
-                return res.json({ message: 'Post cannot be found' });
-            } else {
-                return res.json({ message: `post at ${req.params.id} was deleted` }, { post: post });
-            }
-        })
-        .catch(err => {
-            console.log('error', err);
-            return res.json({ message: 'Post was not deleted try again...' });
-        });
-});
+//                 console.log('post cannot be found');
+//                 return res.json({ message: 'Post cannot be found' });
+//             } else {
+//                 return res.json({ message: `post at ${req.params.id} was deleted` }, { post: post });
+//             }
+//         })
+//         .catch(err => {
+//             console.log('error', err);
+//             return res.json({ message: 'Post was not deleted try again...' });
+//         });
+// });
 
 module.exports = router;

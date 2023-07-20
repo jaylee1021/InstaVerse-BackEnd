@@ -59,7 +59,7 @@ router.get('/:userId', passport.authenticate('jwt', { session: false }), (req, r
 
 // Get /posts/:id (used for editing comments)
 router.get('/post/:postId', (req, res) => {
-    console.log('req.params.id', req.params.postId);
+    // console.log('req.params.id', req.params.postId);
     Post.findById(req.params.postId)
         .then(post => {
             if (post) {
@@ -85,7 +85,7 @@ router.get('/post/:id/comments/:commentId', passport.authenticate('jwt', { sessi
             }
             // find comment by id
             const comment = post.comments.id(req.params.commentId);
-            console.log('--- find comment ---', comment);
+            // console.log('--- find comment ---', comment);
             if (!comment) {
                 console.log('comment cannot be found');
                 return res.json({ message: 'Comment cannot be found' });

@@ -24,11 +24,47 @@ router.get('/', (req, res) => {
         });
 });
 
+
+router.get('/:userId', async (req, res) => {
+    try {
+
+        const follower = await Follower.find({ userId: req.params.userId })
+            .populate('userId', 'username profilePicture')
+            .populate('follower', 'username profilePicture');
+
+        res.json({ follower: follower });
+    } catch (error) {
+        console.log('error', error);
+        res.json({ message: 'There was an issue, please try again' });
+    }
+});
+
 // POST /followers (create a new follower)
 router.post('/', (req, res) => {
-    Follower.create(req.body)
-        .then((follower) => {
-            return res.json({ follower: follower });
+    Follower.findOne({ userId: req.body.userId })
+        .then((user) => {
+            if (user) {
+                console.log('user', user);
+                const amIFollowing = user.follower.find(f => f._id.toString() === req.body.follower);
+                if (amIFollowing) {
+                    return res.json({ message: 'You are already following this user' });
+                } else {
+                    user.follower.push(req.body.follower);
+                    user.save();
+                    return res.json({ message: 'You are now following this user' });
+                }
+            } else {
+                Follower.create({ userId: req.body.userId })
+                    .then((user) => {
+                        user.follower.push(req.body.follower);
+                        user.save();
+                        return res.json({ message: 'You are now following this user' });
+                    })
+                    .catch(error => {
+                        console.log('error', error);
+                        res.json({ message: 'There was an issue, please try again' });
+                    });
+            }
         })
         .catch(error => {
             console.log('error', error);

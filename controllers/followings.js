@@ -25,11 +25,46 @@ router.get('/', (req, res) => {
         });
 });
 
+router.get('/:userId', async (req, res) => {
+    try {
+
+        const following = await Following.find({ userId: req.params.userId })
+            .populate('userId', 'username profilePicture')
+            .populate('following', 'username profilePicture');
+
+        res.json({ following: following });
+    } catch (error) {
+        console.log('error', error);
+        res.json({ message: 'There was an issue, please try again' });
+    }
+});
+
 // POST /followings (create a new following)
-router.post('/', passport.authenticate('jwt', { session: false }), (req, res) => {
-    Following.create(req.body)
-        .then((following) => {
-            return res.json({ following: following });
+router.post('/', (req, res) => {
+    Following.findOne({ userId: req.body.userId })
+        .then((user) => {
+            if (user) {
+                console.log('user', user);
+                const amIFollowing = user.following.find(f => f._id.toString() === req.body.following);
+                if (amIFollowing) {
+                    return res.json({ message: 'You are already following this user' });
+                } else {
+                    user.following.push(req.body.following);
+                    user.save();
+                    return res.json({ message: 'You are now following this user' });
+                }
+            } else {
+                Following.create({ userId: req.body.userId })
+                    .then((user) => {
+                        user.following.push(req.body.following);
+                        user.save();
+                        return res.json({ message: 'You are now following this user' });
+                    })
+                    .catch(error => {
+                        console.log('error', error);
+                        res.json({ message: 'There was an issue, please try again' });
+                    });
+            }
         })
         .catch(error => {
             console.log('error', error);

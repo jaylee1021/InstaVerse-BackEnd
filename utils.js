@@ -24,13 +24,14 @@ function createRandomPost() {
 
 function createRandomFollower() {
     return {
-        username: faker.internet.userName(),
+        userId: '64b849e7ffe336c369b5bdef',
+        follower: ['64b8b0b7d0b4179a346beb6e', '64b8b105d0b4179a346beb74', '64ba0d2c1d8bc12decfb5b68']
     };
 }
 
 function createRandomFollowing() {
     return {
-        username: faker.internet.userName(),
+        following: '64b849e7ffe336c369b5bdef',
     };
 }
 

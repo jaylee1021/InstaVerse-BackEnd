@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const commentSchema = new mongoose.Schema({
     comment: String,
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    createdBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 }, { timestamps: true });
 
 // create post schema
@@ -13,7 +13,7 @@ const postSchema = new mongoose.Schema({
     photo: String,
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     comments: [commentSchema],
-    createdBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 }, { timestamps: true });
 
 // create post model

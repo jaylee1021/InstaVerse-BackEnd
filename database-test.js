@@ -37,18 +37,18 @@ db.on('error', (err) => {
 // }
 
 // create 100 posts
-for (let i = 0; i < 10; i++) {
-    Post.create(createRandomPost())
-        .then((post) => {
-            console.log('Created post: ', post);
-        })
-        .catch((err) => {
-            console.log('error', err);
-        });
-}
+// for (let i = 0; i < 10; i++) {
+//     Post.create(createRandomPost())
+//         .then((post) => {
+//             console.log('Created post: ', post);
+//         })
+//         .catch((err) => {
+//             console.log('error', err);
+//         });
+// }
 
 // create 10 followers
-// for (let i = 0; i < 10; i++) {
+// for (let i = 0; i < 1; i++) {
 //     Follower.create(createRandomFollower())
 //         .then((follower) => {
 //             console.log('Created follower: ', follower);
@@ -58,7 +58,7 @@ for (let i = 0; i < 10; i++) {
 //         });
 // }
 
-// // create 100 following users 
+// // // create 100 following users 
 // for (let i = 0; i < 10; i++) {
 //     Following.create(createRandomFollowing())
 //         .then((following) => {

@@ -282,7 +282,7 @@ router.put('/posts/:id', passport.authenticate('jwt', { session: false }), (req,
 });
 
 // Delete /posts/post/:id (delete a post)
-router.delete('/post/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.delete('/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
     Post.findByIdAndDelete(req.params.id)
         .then(post => {
             if (!post) {

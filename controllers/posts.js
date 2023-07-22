@@ -281,21 +281,21 @@ router.put('/posts/:id', passport.authenticate('jwt', { session: false }), (req,
         });
 });
 
-// Delete /posts/:id (delete a post)
-router.delete('/posts/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+// Delete /posts/post/:id (delete a post)
+router.delete('/post/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
     Post.findByIdAndDelete(req.params.id)
         .then(post => {
             if (!post) {
-
                 console.log('post cannot be found');
-                return res.json({ message: 'Post cannot be found' });
+                return res.status(404).json({ message: 'Post cannot be found' });
             } else {
-                return res.json({ message: `post at ${req.params.id} was deleted` }, { post: post });
+                // Note the change here to use res.status().json()
+                return res.status(200).json({ message: `Post at ${req.params.id} was deleted`, post: post });
             }
         })
         .catch(err => {
             console.log('error', err);
-            return res.json({ message: 'Post was not deleted try again...' });
+            return res.status(500).json({ message: 'Post was not deleted, please try again...' });
         });
 });
 
